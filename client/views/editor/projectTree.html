@@ -3,15 +3,20 @@
     <h5>Current project</h5>
     <select name="projects" class="u-full-width">
       {{#each projects}}
-        <option value="{{_id}}">{{name}}</option>
+        <option value="{{_id}}" {{projectAttributes}}>{{name}}</option>
       {{/each}}
+      <option value="new_project">(Create new project)</option>
     </select>
 
+    <div class="toolbar">
+      <a title="Delete project" id="deleteProject" {{deleteProjectAttributes}}><img src="/img/folder_delete.png"></a>
+      <a title="Delete file" id="deleteFile" {{deleteFileAttributes}}><img src="/img/file_deny.png"></a>
+      <a title="Add file" id="addFile"><img src="/img/file_add.png"></a>
+    </div>
 
     <ul class="files noselect">
       {{#each files}}
-
-        <li {{attributes}}>{{name}}</li>
+        <li {{fileAttributes}}>{{name}}</li>
       {{/each}}
     </ul>
   </div>

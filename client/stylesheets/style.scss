@@ -1,6 +1,12 @@
 $navHeight: 45px;
 $green: #88A843;
+$purple: #8843A8;
 $editor-bg: #333;
+
+
+body {
+  font-family: 'Helvetica Neue';
+}
 
 #editor { 
   position: fixed;
@@ -54,9 +60,20 @@ $editor-bg: #333;
       };
       &.active {
         color:rgba(255,255,255, .9);
-        background:rgba(0,0,0,.2);
+        background:rgba(0,0,0,.3);
       }
     }
+  }
+
+  button {
+    width:96%;
+    margin:10px auto;
+    display:block;
+    background:$purple;
+    border:none;
+    &:hover, &:focus {
+      background:darken($purple, 5%);
+    };
   }
 }
 
@@ -94,6 +111,7 @@ $editor-bg: #333;
     box-sizing:border-box;
     background:rgba(0,0,0,.2);
     letter-spacing:5px;
+    font-weight:400;
     border-right:1px solid #080808;
     img {
       height: 20px;
@@ -114,21 +132,34 @@ $editor-bg: #333;
   position: fixed;
   z-index: 1000;
   left: 0px;
-  top: $navHeight;
+  top: 0;
   width: 100%;
   height: 100%;
   background: #FFF;
-  transition:all .5s;
-  -webkit-transition:all .5s;
+  transition:all .4s;
+  -webkit-transition:all .4s;
   &.hidden {
     top:100%;
   }
 
   .preview-header {
     width:100%;
-    background:url('browser-bar-middle.png') repeat;
+    background:url('/img/browser-bar-middle.png') repeat;
     height: 72px;
     border-bottom: 1px solid #ABABAB;
+
+    button {
+      position: absolute;
+      color:#fff;
+      top: 16px;
+      right: 16px;
+      background: $purple;
+      border:none;
+      /*height: 32px;*/
+      /*line-height: 32px;*/
+      /*width: 130px;*/
+      /*padding: 0px 0px;*/
+    }
   }
   iframe {
     width:100%;
@@ -150,7 +181,34 @@ $editor-bg: #333;
     color:lighten($green, 50%);
     width:96%;
     height:30px;
-    font-size:1.4rem;
+    font-size:1.3rem;
     margin:10px auto;
+  }
+
+  .toolbar {
+    margin-left:20px;
+    margin-bottom:5px;
+    a {
+      display:inline-block;
+      width:32px;
+      height:32px;
+      padding:5px;
+      margin:2px;
+      border-radius:4px;
+      &:hover:not(.disabled) {
+        cursor:pointer;
+        background:rgba(0,0,0,.2);
+      };
+      &.disabled {
+        cursor:default;
+        opacity:.3;
+      }
+    }
+  }
+}
+
+.vex {
+  .vex-dialog-button-primary {
+    background:$green !important;
   }
 }
