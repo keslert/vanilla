@@ -1,0 +1,90 @@
+<template name="editor">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/mode-javascript.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/mode-html.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/mode-css.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/theme-monokai.js"></script>
+  
+  <div class="sidebar">
+    {{> projectTree}}
+  </div>
+
+  <div id="editor"></div>
+
+  <div class="preview-wrapper hidden">
+    <div class="preview-header">
+      <img src="browser-bar-left.png">
+    </div>
+    <iframe src="" frameborder="0"></iframe>
+  </div>
+
+  <script>
+    switchingFiles = false;
+    $(function() {
+      editor = ace.edit("editor");
+      editor.setTheme("ace/theme/monokai");
+      editor.setShowPrintMargin(false);
+      updateStyleSheet("");
+
+      editor.on("change", function(e) {
+        if(!switchingFiles) {
+          updateFileContent(editor.getSession().getValue());
+        }
+      });
+    })
+
+
+    Tracker.autorun(function() {
+      var file = getActiveFile();
+      if(file && editor.getSession().getValue() != file.content) {
+        switchingFiles = true;
+        updateEditorContent(file);
+        switchingFiles = false;
+      }
+    })
+
+
+    function updateEditorContent(file) {
+      editor.getSession().setMode("ace/mode/" + getFileType(file));
+      editor.getSession().setValue(file.content);
+    }
+
+    function getFileType(file) {
+      var i = file.name.lastIndexOf('.');
+      return file.name.substring(i+1);
+    }
+
+    function updateFileContent(content) {
+      var file = getActiveFile();
+      file.content = content;
+      Files.update(file._id, file);
+    }
+
+    function getActiveFile() {
+      return Files.findOne(Session.get("active_file"));
+    }
+
+
+
+    function updateStyleSheet(content) {
+      var doc = $('.preview-wrapper iframe')[0].contentWindow.document;
+      var style = doc.createElement("style");
+      style.textContent = content;
+      // WebKit hack :(
+      style.appendChild(doc.createTextNode(""));
+      doc.head.appendChild(style);
+      return style.sheet;
+    }
+
+
+    function confirmOnPageExit(e)  {
+      e = e || window.event;
+      var message = 'All data is currently temporary and will be lost.';
+      if (e) {
+        e.returnValue = message;
+      }
+      return message;
+    };
+    // window.onbeforeunload = confirmOnPageExit;
+  </script>
+</template>

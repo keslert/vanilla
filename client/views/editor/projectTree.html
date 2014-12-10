@@ -1,0 +1,18 @@
+<template name="projectTree">
+  <div class="project-tree">
+    <h5>Current project</h5>
+    <select name="projects" class="u-full-width">
+      {{#each projects}}
+        <option value="{{_id}}">{{name}}</option>
+      {{/each}}
+    </select>
+
+
+    <ul class="files noselect">
+      {{#each files}}
+
+        <li {{attributes}}>{{name}}</li>
+      {{/each}}
+    </ul>
+  </div>
+</template>
