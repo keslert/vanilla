@@ -38,9 +38,10 @@
 
       Tracker.autorun(function() {
         var file = getActiveFile();
-        if(file && editor.getSession().getValue() != file.content) {
+        if(file && editor.filename != file.name) {
           switchingFiles = true;
           updateEditorContent(file);
+          editor.filename = file.name;
           editor.fileType = getFileType(file);
           updatePreview && updatePreview();
           switchingFiles = false;

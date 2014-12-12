@@ -1,5 +1,8 @@
 Template.accountsSection.helpers({
-
+  'notGuest':function() {
+    var user = Meteor.user();
+    return user && (!user.profile || !user.profile.guest);
+  }
 });
 
 Template.accountsSection.events({
@@ -11,6 +14,11 @@ Template.accountsSection.events({
   },
   'click #logout': function(e, t) {
     Meteor.logout();
+
+    // TODO: This is hacky... redirecting too quickly doesn't allow time to invalidate the old Projects
+    Meteor.setTimeout(function() {
+      Router.go('/editor');  
+    }, 100);
   }
 });
 
@@ -35,7 +43,8 @@ function loginDialog() {
       var password = $el.find('input[type=password]').val();
       return login(email, password, function(message) {
           if (message === 'success') {
-            return vex.close($vex.data().vex.id);
+            vex.close($vex.data().vex.id);
+            Router.go('/editor');
           } else {
             $error.text(message).toggleClass('hidden', false);
           }
@@ -85,7 +94,7 @@ function login(email, password, callback) {
 }
 
 function register(email, password, callback) {
-  Accounts.createUser({username:email, email: email, password : password}, function(err){ 
+  Meteor.call('mergeUser', email, password, function(err, result) {
     if(err) {
       callback(err.reason);
     } else {

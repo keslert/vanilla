@@ -52,6 +52,9 @@ Template.projectTree.events({
   },
   'click #addFile':function() {
     newFileDialog();
+  },
+  'click #renameProject':function() {
+    renameProjectDialog();
   }
 })
 
@@ -134,6 +137,25 @@ function newProjectDialog() {
       } else {
         var projects = Projects.findOne();
         $('select option[value="'+Session.get("active_project")+'"]').attr('selected', true);
+      }
+    }
+  });
+}
+
+function renameProjectDialog() {
+  vex.dialog.open({
+    message: 'Enter the new name of the project:',
+    input: "<input name=\"name\" type=\"text\" required />",
+    buttons: [
+      $.extend({}, vex.dialog.buttons.YES, {
+        text: 'Rename'
+      }), $.extend({}, vex.dialog.buttons.NO, {
+        text: 'Cancel'
+      })
+    ],
+    callback: function(data) {
+      if (data !== false) {
+        Meteor.call('renameProject', Session.get("active_project"), data.name);
       }
     }
   });
