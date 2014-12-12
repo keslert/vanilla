@@ -1,11 +1,13 @@
 <template name="layout.default">
   <div class="nav">
     <a class="logo" href="/">vanilla <img src="/img/ice_cream.png"></a>
-
+    {{> accountsSection }}
   </div>
   <div class="container">
     <div id="main" class="row-fluid">
       {{> yield}}
     </div>
   </div>
+  <script src="//vex.combined.min.js"></script>
+  <script>vex.defaultOptions.className = 'vex-theme-default';</script>
 </template>

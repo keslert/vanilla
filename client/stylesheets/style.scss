@@ -1,8 +1,11 @@
 $navHeight: 45px;
 $green: #88A843;
 $purple: #8843A8;
+$red: #FF4467;
 $editor-bg: #333;
 
+.t-purple { color:$purple !important; }
+.t-green { color:$green !important; }
 
 body {
   font-family: 'Helvetica Neue';
@@ -87,6 +90,7 @@ body {
 }
 
 .nav {
+  padding-right:20px;
   height:$navHeight;
   width:100%;
   box-sizing: border-box;
@@ -101,7 +105,9 @@ body {
     display:inline-block;
     color:#fff;
     text-decoration:none;
-    font-size:1.5rem;
+    &:hover {
+      color:#ddd;
+    };
   }
 
   a.logo {
@@ -111,6 +117,7 @@ body {
     box-sizing:border-box;
     background:rgba(0,0,0,.2);
     letter-spacing:5px;
+    font-size:1.5rem;
     font-weight:400;
     border-right:1px solid #080808;
     img {
@@ -124,6 +131,7 @@ body {
     }
     &:hover {
       background:rgba(0,0,0,.2);
+      color:#fff;
     };
   }
 }
@@ -207,8 +215,29 @@ body {
   }
 }
 
+p.error {
+  padding:5px 10px;
+  background:$red;
+  color:#fff !important;
+  border-radius:4px;
+  margin-bottom:10px;
+  transition:opacity 1.0s;
+  -webkit-transition:opacity 1.0s;
+  &.hidden {
+    height:0;
+    margin:0;
+    padding:0;
+    opacity:0;
+  }
+}
+
+#forgot-password {
+  color:#aaa;
+  text-decoration:none;
+}
+
 .vex {
   .vex-dialog-button-primary {
-    background:$green !important;
+    background:$purple !important;
   }
 }

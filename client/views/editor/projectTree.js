@@ -4,13 +4,6 @@ Template.projectTree.helpers({
   },
   files: function() {
     var activeProject = Session.get("active_project");
-
-    // TODO: What to do if we don't have an active project?
-    if(!activeProject) {
-      activeProject = "TWo7jfLMAmAEk8Fag";
-      Session.set("active_project", activeProject);
-    }
-
     return Files.find({project:activeProject});
   },
   fileAttributes: function() {
@@ -19,15 +12,16 @@ Template.projectTree.helpers({
       class: activeFile == this._id ? "active" : ""
     }
   },
-  projectAttributes:function() {
+  projectAttributes: function() {
     var activeProject = Session.get("active_project");
-    return {
-      selected: this._id == activeProject
-    }
+    if(this._id === activeProject) {
+      return { selected: true };
+    } 
+    return {};
   },
-  deleteProjectAttributes:function() {
+  deleteProjectAttributes: function() {
     return {
-      class: false ? 'disabled' : ''
+      class: (Projects.find().count() == 1) ? 'disabled' : ''
     }
   },
   deleteFileAttributes:function() {
@@ -44,9 +38,7 @@ Template.projectTree.events({
     if(selected == "new_project") {
       newProjectDialog();
     } else {
-      Session.set("active_project", selected);
-      var file = Files.findOne({project:selected});
-      Session.set("active_file", file._id);
+      Router.go('/editor/' + selected);
     }
   }, 
   'click li': function(e, template) {
@@ -69,9 +61,9 @@ function deleteProjectDialog() {
     callback: function(confirmed) {
       if(confirmed) {
         // TODO: Make sure we delete the files associated with this project on the server
-        Projects.remove(Session.get("active_project"));
+        Meteor.call('removeProject', Session.get("active_project"));
         var project = Projects.findOne();
-        Session.set("active_project", project._id);
+        Router.go('/editor/'+project._id);
       }
     }
   });
@@ -82,9 +74,7 @@ function deleteFileDialog() {
     message: 'Are you sure you want to <b>delete this file?</b> This is a permanent action and can\'t be undone.',
     callback: function(confirmed) {
       if(confirmed) {
-        // TODO: Make sure we delete the files associated with this project on the server
-        Files.remove(Session.get("active_file"));
-
+        Meteor.call('removeFile', Session.get("active_file"));
         var file = Files.findOne({project:Session.get("active_project")});
         Session.set("active_file", file._id);
       }
@@ -95,7 +85,7 @@ function deleteFileDialog() {
 function newFileDialog() {
   vex.dialog.open({
     message: 'Enter the name of the file: (must be a .html file)',
-    input: "<input name=\"name\" type=\"text\" required />",
+    input: '<p class="error hidden"></p><input name=\"name\" type=\"text\" required />',
     buttons: [
       $.extend({}, vex.dialog.buttons.YES, {
         text: 'Create'
@@ -103,16 +93,22 @@ function newFileDialog() {
         text: 'Cancel'
       })
     ],
-    callback: function(data) {
-      if (data !== false) {
-        var exists = Files.findOne({project:Session.get("active_project"), name:data.name});
-        if(exists) {
-          vex.dialog.alert("<b>Oops!</b> You can't have two files with the name <em>" + data.name +"</em>.");
+    onSubmit: function(e) {
+      e.preventDefault();
+      var $el = $(this);
+      var $vex = $el.parent();
+      var $error = $vex.find('.error').toggleClass('hidden', true);
+
+      var name = $el.find('input[type=text]').val();
+      var projectId = Session.get("active_project");
+      Meteor.call('insertFile', projectId, name, function(err, fileId) {
+        if(err) {
+          $error.text(err.reason).toggleClass('hidden', false);
         } else {
-          var id = Files.insert({name:data.name, project:Session.get("active_project"), content:"<html>\n<head>\n\t<title>"+data.name+"</title>\n</head>\n<body>\n\t<h1>The start of something delicious.</h1>\n</body>\n</html>"});
-          Session.set("active_file", id);
+          Session.set("active_file", fileId);
+          return vex.close($vex.data().vex.id);
         }
-      }
+      })
     }
   });
 }
@@ -130,13 +126,14 @@ function newProjectDialog() {
     ],
     callback: function(data) {
       if (data !== false) {
-        var id = Projects.insert({name:data.name});
-        Session.set("active_project", id);
-
-        Files.insert({name:"index.html", project:id, content:"<html>\n<head>\n\t<title>"+data.name+"</title>\n</head>\n<body>\n\t<h1>The start of something delicious.</h1>\n</body>\n</html>"});
-        Files.insert({name:"style.css", project:id, content:"body {\n\tmargin:0;\n\tpadding:0;\n}"});
+        Meteor.call('insertProject', data.name, function(err, projectId) {
+          if(!err) {
+            Router.go('/editor/'+projectId);
+          }
+        })
       } else {
-        $('select option[value="SH59CfBmXEBwszm9F"]').attr('selected', true);
+        var projects = Projects.findOne();
+        $('select option[value="'+Session.get("active_project")+'"]').attr('selected', true);
       }
     }
   });

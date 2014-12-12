@@ -1,0 +1,8 @@
+<template name="accountsSection">
+  {{#if currentUser}}
+    <a class="u-pull-right" href="#" id="logout">{{ currentUser.username }}</a>
+  {{else}}
+    <a class="u-pull-right" href="#" id="signup">Sign Up</a>
+    <a class="u-pull-right" href="#" id="login">Login</a>
+  {{/if}}
+</template>
