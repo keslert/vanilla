@@ -1,0 +1,13 @@
+<template name="projectNotFound">
+<div class="not-found">
+  <h1><b>Oops! </b> This project doesn't exist.</h1>
+  <h4>You will be redirected <a href="/editor">back to the editor</a> in a few seconds.</h4>
+  <img src="/img/side_ice_cream.png">
+</div>
+
+<script>
+  Meteor.setTimeout(function() {
+    Router.go('/editor');
+  }, 5000);
+</script>
+</template>

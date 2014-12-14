@@ -5,9 +5,8 @@
 
 meteor-platform
 underscore
-stevezhu:sass
+#stevezhu:sass
+fourseven:scss
 iron:router
 accounts-base
 accounts-password
-#artwells:accounts-guest
-
