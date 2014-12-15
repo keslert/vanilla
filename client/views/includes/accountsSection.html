@@ -1,6 +1,7 @@
 <template name="accountsSection">
   {{#if notGuest}}
-    <a class="u-pull-right" href="#" id="logout">{{ currentUser.username }}</a>
+    <a class="t-dark">{{ currentUser.username }}</a>
+    <a class="u-pull-right" href="#" id="logout">Logout</a>
   {{else}}
     <a class="u-pull-right" href="#" id="signup">Sign Up</a>
     <a class="u-pull-right" href="#" id="login">Login</a>

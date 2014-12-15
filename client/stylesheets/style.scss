@@ -53,10 +53,13 @@ body {
     margin:0;
     padding:0;
     list-style-type:none;
+    max-height:390px;
+    overflow:scroll;
     li {
       width:100%;
       padding:10px 20px;
       margin:0;
+      box-sizing:border-box;
       background:rgba(0,0,0,.1);
       border-top:1px solid rgba(255,255,255,.2);
       border-bottom:1px solid rgba(0,0,0,.2);

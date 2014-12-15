@@ -51,6 +51,35 @@ function loginDialog() {
       });
     }
   });
+
+  $('#forgot-password').click(function() {
+    vex.close();
+    forgotPasswordDialog();
+  })
+
+}
+
+function forgotPasswordDialog() {
+  vex.dialog.open({
+    message: 'Enter your email address:',
+    input: '<input name="username" type="email" placeholder="Email" required /></div>',
+    buttons: [
+      $.extend({}, vex.dialog.buttons.YES, {
+        text: 'Send'
+      }), $.extend({}, vex.dialog.buttons.NO, {
+        text: 'Cancel'
+      })
+    ],
+    callback: function(data) {
+      data && Accounts.forgotPassword({email: data.username}, function(err) {
+        if(err) {
+          vex.dialog.alert(err.reason);
+        } else {
+          vex.dialog.alert('<b>Success!</b> An email with instructions for resetting your password has been sent.');
+        }
+      });
+    }
+  });
 }
 
 function signupDialog() {
